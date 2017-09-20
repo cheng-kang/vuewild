@@ -6,10 +6,10 @@ module.exports = function (config) {
     browsers: ['PhantomJS'],
     reporters: ['spec', 'coverage'],
     files: [
-      'tests/wildvue.spec.js'
+      'tests/vuewild.spec.js'
     ],
     preprocessors: {
-      'tests/wildvue.spec.js': ['webpack', 'sourcemap']
+      'tests/vuewild.spec.js': ['webpack', 'sourcemap']
     },
     client: {
       mocha: {
@@ -21,7 +21,7 @@ module.exports = function (config) {
       devtool: '#inline-source-map',
       module: {
         loaders: [{
-          include: path.resolve(__dirname, 'src/wildvue.js'),
+          include: path.resolve(__dirname, 'src/vuewild.js'),
           loader: 'istanbul-instrumenter'
         }]
       }

@@ -1,8 +1,8 @@
 {
-  "name": "wildvue",
-  "version": "1.1.1",
+  "name": "vuewild",
+  "version": "1.0.0",
   "description": "Wilddog bindings for Vue.js",
-  "main": "dist/wildvue.js",
+  "main": "dist/vuewild.js",
   "files": [
     "dist/**",
     "LICENSE",
@@ -11,14 +11,14 @@
   "scripts": {
     "lint": "eslint --ext=js,html src tests examples karma.conf.js",
     "test": "npm run lint && karma start karma.conf.js --single-run",
-    "dev": "webpack src/wildvue.js dist/wildvue.js --watch",
-    "build-dev": "webpack src/wildvue.js dist/wildvue.js --output-library=WildVue --output-library-target=umd",
-    "build-prod": "webpack src/wildvue.js dist/wildvue.min.js --output-library=WildVue --output-library-target=umd -p",
+    "dev": "webpack src/vuewild.js dist/vuewild.js --watch",
+    "build-dev": "webpack src/vuewild.js dist/vuewild.js --output-library=vuewild --output-library-target=umd",
+    "build-prod": "webpack src/vuewild.js dist/vuewild.min.js --output-library=vuewild --output-library-target=umd -p",
     "build": "npm run build-dev && npm run build-prod"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vuejs/wildvue.git"
+    "url": "git+https://github.com/cheng-kang/vuewild.git"
   },
   "keywords": [
     "vue",
@@ -26,12 +26,12 @@
     "wilddog",
     "realtime"
   ],
-  "author": "wilddog",
+  "author": "Evan You, Wilddog Team",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/vuejs/wildvue/issues"
+    "url": "https://github.com/cheng-kang/vuewild/issues"
   },
-  "homepage": "https://github.com/vuejs/wildvue#readme",
+  "homepage": "https://github.com/cheng-kang/vuewild#readme",
   "devDependencies": {
     "chai": "^3.5.0",
     "codecov": "^1.0.1",

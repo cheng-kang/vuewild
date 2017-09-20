@@ -1,9 +1,9 @@
 var Vue = require('vue')
 var wilddog = require('wilddog')
-var WildVue = require('../src/wildvue')
+var VueWild = require('../src/vuewild')
 var helpers = require('./helpers')
 
-Vue.use(WildVue)
+Vue.use(VueWild)
 
 var wilddogApp = wilddog.initializeApp({
   authDomain: 'test123.wilddog.com',
@@ -11,10 +11,9 @@ var wilddogApp = wilddog.initializeApp({
 })
 var sync = wilddogApp.sync()
 
-describe('WildVue', function () {
+describe('VueWild', function () {
   var wilddogRef
-  // network can be very slow
-  this.timeout(0)
+
   beforeEach(function (done) {
     wilddogRef = sync
     wilddogRef.remove(function (error) {
@@ -36,7 +35,7 @@ describe('WildVue', function () {
               items: ref
             }
           })
-        }).to.throw('WildVue: invalid Wilddog binding source.')
+        }).to.throw('VueWild: invalid Wilddog binding source.')
       })
     })
 */
@@ -504,7 +503,7 @@ describe('WildVue', function () {
               }
             }
           })
-        }).to.throw('WildVue: invalid Wilddog binding source.')
+        }).to.throw('VueWild: invalid Wilddog binding source.')
       })
     })
 */
