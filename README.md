@@ -4,7 +4,7 @@
 
 ## Install
 
-1. If included as global <script>: will install automatically if global Vue is present.
+1. If included as global `<script>`: will install automatically if global Vue is present.
 
   ``` html
   <head>
