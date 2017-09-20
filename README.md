@@ -1,4 +1,4 @@
-# VueWild
+# VueWild [![npm version](https://badge.fury.io/js/vuewild.svg)](https://badge.fury.io/js/vuewild)
 
 > Vue.js bindings for Wilddog
 
