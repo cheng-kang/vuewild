@@ -1,6 +1,10 @@
 # VueWild [![npm version](https://badge.fury.io/js/vuewild.svg)](https://badge.fury.io/js/vuewild)
 
-> Vue.js bindings for Wilddog
+> Vue.js bindings for Wilddog.
+
+> This project intends to keep a up-to-date `Wilddog` version of `VueFire`. This project is forked from [WildVue](https://github.com/WildDogTeam/lib-js-wild-vue), which is forked from [VueFire](https://github.com/vuejs/vuefire) : D. The current `WildVue` project does not include latest `VueFire` features (e.g. `readyCallback`, `function syntax`). 
+
+> I have not written a single line of new code, just copying & pasting. Thus I state in `pakage.json` that the authors are `Evan You` and `Wilddog Team`. Many thanks to them.
 
 ## Install
 
