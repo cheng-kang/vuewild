@@ -1,0 +1,61 @@
+{
+  "name": "wildvue",
+  "version": "1.1.1",
+  "description": "Wilddog bindings for Vue.js",
+  "main": "dist/wildvue.js",
+  "files": [
+    "dist/**",
+    "LICENSE",
+    "README.md"
+  ],
+  "scripts": {
+    "lint": "eslint --ext=js,html src tests examples karma.conf.js",
+    "test": "npm run lint && karma start karma.conf.js --single-run",
+    "dev": "webpack src/wildvue.js dist/wildvue.js --watch",
+    "build-dev": "webpack src/wildvue.js dist/wildvue.js --output-library=WildVue --output-library-target=umd",
+    "build-prod": "webpack src/wildvue.js dist/wildvue.min.js --output-library=WildVue --output-library-target=umd -p",
+    "build": "npm run build-dev && npm run build-prod"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vuejs/wildvue.git"
+  },
+  "keywords": [
+    "vue",
+    "mixin",
+    "wilddog",
+    "realtime"
+  ],
+  "author": "wilddog",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vuejs/wildvue/issues"
+  },
+  "homepage": "https://github.com/vuejs/wildvue#readme",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "codecov": "^1.0.1",
+    "eslint": "^3.0.0",
+    "eslint-config-standard": "^5.1.0",
+    "eslint-plugin-html": "^1.5.2",
+    "eslint-plugin-promise": "^3.3.0",
+    "eslint-plugin-standard": "^2.0.1",
+    "istanbul-instrumenter-loader": "^0.2.0",
+    "karma": "^0.13.22",
+    "karma-coverage": "^0.5.5",
+    "karma-mocha": "^0.2.2",
+    "karma-phantomjs-launcher": "^1.0.0",
+    "karma-sinon-chai": "^1.2.0",
+    "karma-sourcemap-loader": "^0.3.7",
+    "karma-spec-reporter": "0.0.24",
+    "karma-webpack": "^1.8.0",
+    "lolex": "^1.4.0",
+    "mocha": "^2.4.5",
+    "phantomjs-prebuilt": "^2.1.3",
+    "sinon": "^1.17.3",
+    "sinon-chai": "^2.8.0",
+    "vue": "^1.0.19",
+    "webpack": "^1.12.14",
+    "wilddog": "^2.3.10"
+  }
+}
