@@ -51,7 +51,7 @@ var vm = new Vue({
       asObject: true,
       // optionally provide the cancelCallback
       cancelCallback: function () {},
-      // this is called once the data has been retrieved from firebase
+      // this is called once the data has been retrieved from Wilddog
       readyCallback: function () {}
     }
   }
@@ -63,7 +63,7 @@ If you need to access properties from the Vue instance, use the function syntax:
 ```js
 var vm = new Vue({
   el: '#demo',
-  firebase: function () {
+  wilddog: function () {
     return {
       anArray: sync.ref('url/to/my/collection/')
     }
@@ -128,7 +128,7 @@ export default {
       item: ''
     }
   },
-  firebase: {
+  wilddog: {
     items: sync.ref('items')
   },
   methods: {
