@@ -1,9 +1,10 @@
 var path = require('path')
+process.env.CHROME_BIN = require('puppeteer').executablePath()
 
 module.exports = function (config) {
   config.set({
     frameworks: ['mocha', 'sinon-chai'],
-    browsers: ['PhantomJS'],
+    browsers: ['ChromeHeadless'],
     reporters: ['spec', 'coverage'],
     files: [
       'tests/vuewild.spec.js'
@@ -11,12 +12,13 @@ module.exports = function (config) {
     preprocessors: {
       'tests/vuewild.spec.js': ['webpack', 'sourcemap']
     },
+    logLevel: config.LOG_DEBUG,
     client: {
+      captureConsole: true,
       mocha: {
-        timeout: 100000
+        timeout: 10000
       }
     },
-    browserNoActivityTimeout: 100000,
     webpack: {
       devtool: '#inline-source-map',
       module: {

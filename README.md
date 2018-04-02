@@ -1,21 +1,17 @@
-# VueWild [![npm version](https://badge.fury.io/js/vuewild.svg)](https://badge.fury.io/js/vuewild)
+# VueWild [![Build Status](https://img.shields.io/circleci/project/vuejs/vuewild.svg)](https://circleci.com/gh/vuejs/vuewild) [![npm package](https://img.shields.io/npm/v/vuewild.svg)](https://www.npmjs.com/package/vuewild) [![coverage](https://img.shields.io/codecov/c/github/vuejs/vuewild.svg)](https://codecov.io/github/vuejs/vuewild)
 
-> Vue.js bindings for Wilddog.
+> Vue.js 1 & 2 binding for Wilddog
 
-> This project intends to keep a up-to-date `Wilddog` version of `VueFire`. This project is forked from [WildVue](https://github.com/WildDogTeam/lib-js-wild-vue), which is forked from [VueFire](https://github.com/vuejs/vuefire) : D. The current `WildVue` project does not include latest `VueFire` features (e.g. `readyCallback`, `function syntax`). 
+## Installation
 
-> I have not written a single line of new code, just copying & pasting. Thus I state in `pakage.json` that the authors are `Evan You` and `Wilddog Team`. Many thanks to them.
-
-## Install
-
-1. If included as global `<script>`: will install automatically if global Vue is present.
+1. If included as global `<script>`: will install automatically if global `Vue` is present.
 
   ``` html
   <head>
     <!-- Vue -->
     <script src="https://unpkg.com/vue/dist/vue.js"></script>
     <!-- Wilddog -->
-    <script src="https://cdn.wilddog.com/sdk/js/2.5.8/wilddog.js"></script>
+    <script src="https://cdn.wilddog.com/sdk/js/2.5.17/wilddog.js"></script>
     <!-- VueWild -->
     <script src="https://unpkg.com/vuewild/dist/vuewild.js"></script>
   </head>
@@ -31,7 +27,7 @@
   var Vue = require('vue')
   var VueWild = require('vuewild')
   var wilddog = require('wilddog')
-  
+
   // explicit installation required in module environments
   Vue.use(VueWild)
   ```
@@ -40,22 +36,23 @@
 
 ``` js
 var wilddogApp = wilddog.initializeApp({ ... })
-var sync = wilddogApp.sync()
+var db = wilddogApp.database()
+
 var vm = new Vue({
   el: '#demo',
   wilddog: {
     // simple syntax, bind as an array by default
-    anArray: sync.ref('url/to/my/collection'),
+    anArray: db.ref('url/to/my/collection'),
     // can also bind to a query
-    anotherArray: sync.ref('url/to/my/collection').limitToLast(25),
+    // anArray: db.ref('url/to/my/collection').limitToLast(25)
     // full syntax
     anObject: {
-      source: sync.ref('url/to/my/object'),
+      source: db.ref('url/to/my/object'),
       // optionally bind as an object
       asObject: true,
       // optionally provide the cancelCallback
       cancelCallback: function () {},
-      // this is called once the data has been retrieved from Wilddog
+      // this is called once the data has been retrieved from wilddog
       readyCallback: function () {}
     }
   }
@@ -69,7 +66,7 @@ var vm = new Vue({
   el: '#demo',
   wilddog: function () {
     return {
-      anArray: sync.ref('url/to/my/collection/')
+      anArray: db.ref('url/to/my/collection/')
     }
   }
 })
@@ -85,7 +82,7 @@ var vm = new Vue({
 
 ``` html
 <div id="demo">
-  <pre>{{ anObject | json }}</pre>
+  <pre>{{ anObject }}</pre>
   <ul>
     <li v-for="item in anArray">{{ item.text }}</li>
   </ul>
@@ -106,7 +103,6 @@ Alternatively, you can also manually bind to a Wilddog ref with the `$bindAsObje
 ``` js
 vm.$bindAsObject('user', myWilddogRef.child('user'))
 vm.$bindAsArray('items', myWilddogRef.child('items').limitToLast(25))
-
 // You can also pass cancelCallback and readyCallback callbacks functions as
 // a third and fourth arguments. Any of them can be omitted by passing null
 vm.$bindAsObject('user', myWilddogRef.child('user'), null, () => console.log('Ready fired!'))
@@ -118,12 +114,11 @@ vm.$unbind('items')
 
 To save user-input to your Wilddog database, simply push the data onto `this.$wilddogRefs.items` (instead of `this.items`) within a Vue method to automatically sync with Wilddog.
 For example, in your template you could add something simple like
-
 ```html
 <input v-model="item" placeholder="Add an item"/>
 <button @click="addItem">Add item</button>
-```
 
+```
 And within your Vue component
 ```js
 export default {
@@ -133,7 +128,7 @@ export default {
     }
   },
   wilddog: {
-    items: sync.ref('items')
+    items: db.ref('items')
   },
   methods: {
     addItem () {
@@ -143,8 +138,8 @@ export default {
     }
   }
 }
-```
 
+```
 ## Data Normalization
 
 ### Array Bindings
@@ -195,10 +190,10 @@ To delete or update an item you can use the `.key` property of a given object. B
  },
  updateItem: function (item) { 
    // create a copy of the item
-   item = {...item}
+   const copy = {...item}
    // remove the .key attribute
-   delete item['.key']
-   this.$wilddogRefs.items.child(item['.key']).set(item)
+   delete copy['.key']
+   this.$wilddogRefs.items.child(item['.key']).set(copy)
  } 
 ```
 

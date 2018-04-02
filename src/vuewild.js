@@ -91,10 +91,12 @@ function bind (vm, key, source) {
   if (!isObject(source)) {
     throw new Error('VueWild: invalid Wilddog binding source.')
   }
-  // get the original ref for possible queries
   var ref = _getRef(source)
   vm.$wilddogRefs[key] = ref
   vm._wilddogSources[key] = source
+  if (cancelCallback) {
+    cancelCallback = cancelCallback.bind(vm)
+  }
   // bind based on initial value type
   if (asObject) {
     bindAsObject(vm, key, source, cancelCallback)
@@ -228,8 +230,7 @@ var init = function () {
 }
 
 var VueWildMixin = {
-  init: init, // 1.x
-  beforeCreate: init, // 2.x
+  created: init, // 1.x and 2.x
   beforeDestroy: function () {
     if (!this.$wilddogRefs) return
     for (var key in this.$wilddogRefs) {
@@ -252,9 +253,8 @@ function install (_Vue) {
   Vue = _Vue
   Vue.mixin(VueWildMixin)
 
-  // use object-based merge strategy
   var mergeStrats = Vue.config.optionMergeStrategies
-  mergeStrats.wilddog = mergeStrats.methods
+  mergeStrats.wilddog = mergeStrats.provide
 
   // extend instance methods
   Vue.prototype.$bindAsObject = function (key, source, cancelCallback, readyCallback) {

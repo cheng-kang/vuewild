@@ -1,23 +1,22 @@
 var Vue = require('vue')
-var wilddog = require('wilddog')
+var Wilddog = require('wilddog')
 var VueWild = require('../src/vuewild')
 var helpers = require('./helpers')
 
 Vue.use(VueWild)
 
-var wilddogApp = wilddog.initializeApp({
-  authDomain: 'test123.wilddog.com',
-  syncURL: 'https://test123.wilddogio.com'
+var wilddogApp = Wilddog.initializeApp({
+  syncURL: 'https://wd1182416762gsukoh.wilddogio.com',
+  authDomain: 'wd1182416762gsukoh.wilddog.com'
 })
-var sync = wilddogApp.sync()
 
 describe('VueWild', function () {
   var wilddogRef
 
   beforeEach(function (done) {
-    wilddogRef = sync
+    wilddogRef = wilddogApp.sync().ref()
     wilddogRef.remove(function (error) {
-      if (error && error.code !== 'OP_REPEAT') {
+      if (error) {
         done(error)
       } else {
         wilddogRef = wilddogRef.child(helpers.generateRandomString())
@@ -26,8 +25,105 @@ describe('VueWild', function () {
     })
   })
 
+  describe('support Function options', function () {
+    it('option is callable as function', function () {
+      var spy = sinon.spy()
+      expect(function () {
+        new Vue({
+          wilddog: spy
+        }).$mount()
+      }).to.not.throw()
+      expect(spy.calledOnce).to.be.true
+    })
+  })
+
+  describe('on ready callback', function () {
+    it('arrays', function (done) {
+      wilddogRef.set({
+        first: { index: 0 },
+        second: { index: 1 },
+        third: { index: 2 }
+      }, function () {
+        new Vue({
+          wilddog: {
+            items: {
+              source: wilddogRef,
+              readyCallback: function () {
+                expect(this.items).to.deep.equal([
+                  { '.key': 'first', index: 0 },
+                  { '.key': 'second', index: 1 },
+                  { '.key': 'third', index: 2 }
+                ])
+                done()
+              }
+            }
+          }
+        }).$mount()
+      })
+    })
+
+    it('objects', function (done) {
+      wilddogRef.child('first').set({
+        index: 0
+      }, function () {
+        new Vue({
+          wilddog: {
+            item: {
+              source: wilddogRef.child('first'),
+              asObject: true,
+              readyCallback: function () {
+                expect(this.item).to.deep.equal(
+                  { '.key': 'first', index: 0 }
+                )
+                done()
+              }
+            }
+          }
+        }).$mount()
+      })
+    })
+
+    it('$bindAsArray', function (done) {
+      wilddogRef.set({
+        first: { index: 0 },
+        second: { index: 1 },
+        third: { index: 2 }
+      }, function () {
+        new Vue({
+          created: function () {
+            this.$bindAsArray('items', wilddogRef, null, function () {
+              expect(this.items).to.deep.equal([
+                { '.key': 'first', index: 0 },
+                { '.key': 'second', index: 1 },
+                { '.key': 'third', index: 2 }
+              ])
+              done()
+            })
+          }
+        }).$mount()
+      })
+    })
+
+    it('$bindAsObject', function (done) {
+      wilddogRef.child('first').set({
+        index: 0
+      }, function () {
+        new Vue({
+          created: function () {
+            this.$bindAsObject('item', wilddogRef.child('first'), null, function () {
+              expect(this.item).to.deep.equal(
+                { '.key': 'first', index: 0 }
+              )
+              done()
+            })
+          }
+        }).$mount()
+      })
+    })
+  })
+
   describe('bind as Array', function () {
- /*   it('throws error for invalid wilddog ref', function () {
+    it('throws error for invalid wilddog ref', function () {
       helpers.invalidWilddogRefs.forEach(function (ref) {
         expect(function () {
           new Vue({
@@ -38,7 +134,7 @@ describe('VueWild', function () {
         }).to.throw('VueWild: invalid Wilddog binding source.')
       })
     })
-*/
+
     it('binds array records which are objects', function (done) {
       var vm = new Vue({
         wilddog: {
@@ -82,6 +178,42 @@ describe('VueWild', function () {
         ])
         Vue.nextTick(function () {
           expect(vm.$el.textContent).to.contain('first 0 second 1 third 2')
+          done()
+        })
+      })
+    })
+
+    it('bind using $bindAsArray after $unbind', function (done) {
+      var refItems = wilddogRef.child('items')
+      var refOther = wilddogRef.child('other')
+      var vm = new Vue({
+        template: '<div><div v-for="item in items">{{ item[".key"] }} {{ item.index }} </div></div>',
+        created: function () {
+          this.$bindAsArray('items', refItems)
+        }
+      }).$mount()
+      refItems.set({
+        first: { index: 0 },
+        second: { index: 1 },
+        third: { index: 2 }
+      }, function () {
+        expect(vm.items).to.deep.equal([
+          { '.key': 'first', index: 0 },
+          { '.key': 'second', index: 1 },
+          { '.key': 'third', index: 2 }
+        ])
+        vm.$unbind('items')
+        vm.$bindAsArray('items', refOther)
+        refOther.set({
+          a: { index: 0 },
+          b: { index: 1 },
+          c: { index: 2 }
+        }, function () {
+          expect(vm.items).to.deep.equal([
+            { '.key': 'a', index: 0 },
+            { '.key': 'b', index: 1 },
+            { '.key': 'c', index: 2 }
+          ])
           done()
         })
       })
@@ -131,7 +263,7 @@ describe('VueWild', function () {
       })
     })
 
-    it('binds array records which are a mix of objects and primitives', function (done) {
+    it('binds an empty array by default', function (done) {
       var vm = new Vue({
         wilddog: {
           items: wilddogRef
@@ -492,7 +624,7 @@ describe('VueWild', function () {
   })
 
   describe('bind as Object', function () {
-  /*  it('throws error for invalid wilddog ref', function () {
+    it('throws error for invalid wilddog ref', function () {
       helpers.invalidWilddogRefs.forEach(function (ref) {
         expect(function () {
           new Vue({
@@ -506,7 +638,7 @@ describe('VueWild', function () {
         }).to.throw('VueWild: invalid Wilddog binding source.')
       })
     })
-*/
+
     it('binds to an Object', function (done) {
       var obj = {
         first: { index: 0 },
@@ -527,6 +659,35 @@ describe('VueWild', function () {
         expect(vm.items).to.deep.equal(obj)
         Vue.nextTick(function () {
           expect(vm.$el.textContent).to.contain(JSON.stringify(obj, null, 2))
+          done()
+        })
+      })
+    })
+
+    it('binds with $bindAsObject after $unbind', function (done) {
+      var obj = {
+        first: { index: 0 },
+        second: { index: 1 },
+        third: { index: 2 }
+      }
+      var objOther = {
+        onlyOne: { index: 0 },
+        second: { index: 1 }
+      }
+      var vm = new Vue({
+        template: '<div>{{ items | json }}</div>',
+        created: function () {
+          this.$bindAsObject('items', wilddogRef.child('items'))
+        }
+      }).$mount()
+      wilddogRef.child('items').set(obj, function () {
+        obj['.key'] = 'items'
+        expect(vm.items).to.deep.equal(obj)
+        vm.$unbind('items')
+        vm.$bindAsObject('items', wilddogRef.child('others'))
+        wilddogRef.child('others').set(objOther, function () {
+          objOther['.key'] = 'others'
+          expect(vm.items).to.deep.equal(objOther)
           done()
         })
       })
@@ -599,7 +760,7 @@ describe('VueWild', function () {
     })
 
     it('sets the key as null when bound to the root of the database', function (done) {
-      var rootRef = wilddogRef.root()
+      var rootRef = wilddogRef.root
       var vm = new Vue({
         wilddog: {
           items: {
